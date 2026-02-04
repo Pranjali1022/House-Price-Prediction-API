@@ -67,14 +67,17 @@ import xgboost as xgb
 def predict_price(input_data: PropertyInput):
     try:
         X = preprocess_input(input_data)
-        dmatrix = xgb.DMatrix(X, feature_names=feature_columns)
+        dmatrix = xgb.DMatrix(X,feature_names=feature_columns)
         prediction = model.get_booster().predict(dmatrix)[0]
-        return {"predicted_price": round(float(prediction), 2)}
+        price = float(prediction)
+        price = max(price, 0) 
+        return {"predicted_price": round(price, 2)}
     except Exception as e:
         return {
             "error": "Prediction failed",
             "details": str(e)
         }
+
 
 if __name__ == "__main__":
     import uvicorn
