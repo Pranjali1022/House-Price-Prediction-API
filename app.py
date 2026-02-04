@@ -61,14 +61,20 @@ app=FastAPI(title="House Price Prediction",
 def health_check():
   return{"Status": "Your API is running well"}
 
+import xgboost as xgb
+
 @app.post("/predict")
 def predict_price(input_data: PropertyInput):
     try:
         X = preprocess_input(input_data)
-        prediction = model.predict(X)[0]
+        dmatrix = xgb.DMatrix(X, feature_names=feature_columns)
+        prediction = model.get_booster().predict(dmatrix)[0]
         return {"predicted_price": round(float(prediction), 2)}
     except Exception as e:
-        return {"error": "Prediction failed","details": str(e)}
+        return {
+            "error": "Prediction failed",
+            "details": str(e)
+        }
 
 if __name__ == "__main__":
     import uvicorn
