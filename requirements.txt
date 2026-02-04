@@ -3,5 +3,6 @@ uvicorn
 pandas
 numpy
 joblib
-xgboost
 scikit-learn
+xgboost==1.7.6
+
